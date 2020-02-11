@@ -1,0 +1,89 @@
+#include<stdio.h>
+#include<stdlib.h>
+#define MAX_VERTEX_NUM 20
+
+typedef char VertexType;
+typedef enum { UDG, DG } GraphType;
+typedef struct
+{
+	VertexType Vertex[MAX_VERTEX_NUM];
+	int arcs[MAX_VERTEX_NUM][MAX_VERTEX_NUM];
+	GraphType Mtype;
+	int arcnum, vernum;    //图当前的定点数和弧（或边）数
+}MGraph;
+
+void CreateMGraph(MGraph *MG)
+{
+	int i, j, k, m, row = 0, line = 0;
+	VertexType c, tail, top;
+	printf("请输入图的类型1（有向图），0为无向图：");
+	scanf("%d", &MG->Mtype);
+	printf("\n请输入顶点数：");
+	scanf("%d", &MG->vernum);
+	printf("\n请输入边数：");
+	scanf("%d", &MG->arcnum);
+	getchar();
+	//初始化邻接矩阵
+	for (i = 0; i < MG->vernum; i++)
+		for (j = 0; j < MG->vernum; j++)
+			MG->arcs[i][j] = 0;
+	//初始化顶点数组
+	printf("\n请输入顶点元素：");
+	scanf("%c", &c);
+	for (k = 0; k < MG->vernum; k++)
+	{
+		MG->Vertex[k] = c;
+		scanf("%c", &c);
+	}
+	//getchar();
+	//输入图的边
+	for (m = 0; m < MG->arcnum; m++)
+	{
+		printf("\n请输入第%dth条边：", m+1);
+		scanf("%c", &tail);
+		scanf("%c", &top);
+		//根据边写入对应邻接矩阵
+		for (i = 0; i < MG->vernum; i++)
+		{
+			if (MG->Vertex[i] == tail)
+			{
+				row = i;
+				break;
+			}
+		}
+		for (j = 0; j < MG->vernum; j++)
+		{
+			if (MG->Vertex[j] == top)
+			{
+				line = j;
+				break;
+			}
+		}
+		if (row != line)
+			MG->arcs[row][line] = MG->arcs[line][row]=1;    //无向图邻接矩阵沿对角线对称
+		else
+			printf("\n输入第%dth条边出错，请重试", m);
+		getchar();
+	}
+
+}
+
+void printMG(MGraph MG)
+{
+	int i, j;
+	for (i = 0; i < MG.vernum; i++)
+	{
+		printf("\n");
+		for (j = 0; j < MG.vernum; j++)
+			printf("%d ", MG.arcs[i][j]);
+	}
+
+}
+
+int main()
+{
+	MGraph MG;
+	CreateMGraph(&MG);
+	printMG(MG);
+	getchar();
+}
